@@ -129,7 +129,7 @@ class CalcController {
     }
 
     isOperator(value){
-    return (['+','-','*','/','%','square'].indexOf(value) > -1);
+    return (['+','-','*','/','%','square','elevation'].indexOf(value) > -1);
     }
 
     pushOperation(value){
@@ -141,9 +141,11 @@ class CalcController {
 
     getResult(){
         try{
-           // console.log(this._lastOperator);
+           console.log(this._lastOperator);
             if  (this._lastOperator == 'square'){
                     return Math.sqrt(this._operation[0]);
+                } else if (this._lastOperator == 'pow'){
+                    return Math.pow(this._operation[0],3);
                 } else {
                     return eval(this._operation.join(""));
                 }        
@@ -291,12 +293,10 @@ class CalcController {
                 break;
             case 'square':
                 this.addOperation('square');
-                //return Math.sqrt(this._operation);
-                //console.log(this._operation);
-                //this._operation.result = Math.sqrt(this._operation);  
                 this.calc();
                 break;
-            case 'elevation':
+            case 'pow':
+                this.addOperation('pow');
                 this.calc();
                 break;
             case 'derivate':
