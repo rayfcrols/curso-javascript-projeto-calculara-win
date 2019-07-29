@@ -34,13 +34,11 @@ class CalcController {
         this.setLastNumberToDisplay();
         this.pasteFromClipboard();
         
-        document.querySelectorAll('.btn-ac').forEach(btn=>{
+        document.querySelectorAll('#btn-c').forEach(btn=>{
             btn.addEventListener('dblclick', e=>{
                 this.toggleAudio();
             });
         });
-
-
     }
 
     toggleAudio(){
@@ -115,7 +113,6 @@ class CalcController {
         this._lastNumber = '';
         this._lastOperator = '';
         this.setLastNumberToDisplay();
-        this.adjustDisplay();
     }
 
     clearEntry(){
@@ -132,7 +129,7 @@ class CalcController {
     }
 
     isOperator(value){
-    return (['+','-','*','/','%'].indexOf(value) > -1);
+    return (['+','-','*','/','%','square'].indexOf(value) > -1);
     }
 
     pushOperation(value){
@@ -144,7 +141,12 @@ class CalcController {
 
     getResult(){
         try{
-            return eval(this._operation.join(""));
+           // console.log(this._lastOperator);
+            if  (this._lastOperator == 'square'){
+                    return Math.sqrt(this._operation[0]);
+                } else {
+                    return eval(this._operation.join(""));
+                }        
         } catch(e){
             setTimeout(()=>{
                 this.setError();
@@ -155,12 +157,16 @@ class CalcController {
 
     calc(){
         let last = '';
+       
+        //let result = '';
         this._lastOperator = this.getLastItem(true);
+        //console.log(this._lastOperator);
 
-        if (this._operation.length < 3){
+        if (this._operation.length < 3){ 
+            //console.log(last);
             let firstItem = this._operation[0];
             this._operation = [firstItem, this._lastOperator,this._lastNumber];
-        }
+            }
 
         if (this._operation.length > 3){
             last = this._operation.pop();
@@ -168,20 +174,22 @@ class CalcController {
         } else if (this._operation.length == 3){
             this._lastNumber = this.getLastItem(false);
         } 
+       
         
         let result = this.getResult();
-
+    
+        
         if (last == '%'){
             result /= 100;
             this._operation = [result];
 
-        } else {
+        }  else {
   
             this._operation = [result];         
             if (last) this._operation.push(last);
         }
-        this.setLastNumberToDisplay();
-        //console.log(this._operation);     
+        console.log(result);   
+        this.setLastNumberToDisplay();    
 
     }
 
@@ -204,6 +212,7 @@ class CalcController {
                 
         if (!lastNumber) lastNumber = 0;
         this.displayCalc = lastNumber;
+        //this.displayCalc = 2.5;
         //console.log(this._operation);  
     }
 
@@ -256,31 +265,50 @@ class CalcController {
     execBtn(value){
         this.playAudio();
         switch (value){
-            case 'ac':
+            case 'c':
                 this.clearAll();
                 break;
             case 'ce':
                 this.clearEntry();
                 break;
-            case 'soma':
+            case 'sum':
                 this.addOperation('+');
                 break;
-            case 'subtracao':
+            case 'subtraction':
                 this.addOperation('-');
                 break;
-            case 'divisao':
+            case 'division':
                 this.addOperation('/');
                 break;
-            case 'multiplicacao':
+            case 'multiplication':
                 this.addOperation('*');
                 break;
-            case 'porcento':
+            case 'percent':
                 this.addOperation('%');
                 break;
-            case 'igual':
+            case 'equal':
                 this.calc();
                 break;
-            case 'ponto':
+            case 'square':
+                this.addOperation('square');
+                //return Math.sqrt(this._operation);
+                //console.log(this._operation);
+                //this._operation.result = Math.sqrt(this._operation);  
+                this.calc();
+                break;
+            case 'elevation':
+                this.calc();
+                break;
+            case 'derivate':
+                this.calc();
+                break;
+            case 'reverse':
+                this.calc();
+                break;
+            case 'back':
+                this.calc();
+                break;
+            case 'dot':
                 this.addDot('.');
                 break;
             case '0':
@@ -308,7 +336,7 @@ class CalcController {
 
         buttons.forEach(btn => {
             //console.log(btn);
-            this.addEventListenerAll(btn, "click drag", e => {
+            this.addEventListenerAll(btn, "drag click", e => {
                 //console.log(btn.id.replace("btn-", ""));
                let textBtn = btn.id.replace("btn-", "");
              this.execBtn(textBtn);
@@ -330,9 +358,21 @@ class CalcController {
     set displayCalc(value) {
         
         if (value.toString().length > 10){
-            this.setError();
-            return false;
+            try {
+                value = value.toFixed(2);
+            } catch (error) {
+                this.setError();
+                return false;  
+            }
+            
         } 
+        
+        if (value.toString().length < 0.01){
+                this.setError();
+                return false;  
+            
+        } 
+        
 
         //var that = $(this),
        // textLength = that.val().length;
@@ -347,6 +387,7 @@ class CalcController {
             }
         }*/
        // this.adjustDisplay();
+        //this._displayCalcEl.innerHTML = parseFloat(value);
         this._displayCalcEl.innerHTML = value;
     }
 
