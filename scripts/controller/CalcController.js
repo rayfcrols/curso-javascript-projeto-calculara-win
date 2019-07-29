@@ -121,6 +121,7 @@ class CalcController {
     }
 
     getLastOperation(){
+        console.log("LastOperation ",this._operation);
         return this._operation[this._operation.length-1];
     }
 
@@ -129,7 +130,7 @@ class CalcController {
     }
 
     isOperator(value){
-    return (['+','-','*','/','%','square'].indexOf(value) > -1);
+    return (['+','-','*','/','%','square','sqrt','derivate','reverse'].indexOf(value) > -1);
     }
 
     pushOperation(value){
@@ -141,12 +142,18 @@ class CalcController {
 
     getResult(){
         try{
-           // console.log(this._lastOperator);
+           //console.log(this._lastOperator);
             if  (this._lastOperator == 'square'){
+                    return Math.pow(this._operation[0],2);
+                } else if (this._lastOperator == 'sqrt'){
                     return Math.sqrt(this._operation[0]);
-                } else {
+                }else if (this._lastOperator == 'derivate'){
+                    return eval(1 / this._operation[0]);
+                }else if (this._lastOperator == 'reverse'){
+                    return eval(this._operation[0] - (this._operation[0] * 2));
+                }else {
                     return eval(this._operation.join(""));
-                }        
+                }
         } catch(e){
             setTimeout(()=>{
                 this.setError();
@@ -166,7 +173,7 @@ class CalcController {
             //console.log(last);
             let firstItem = this._operation[0];
             this._operation = [firstItem, this._lastOperator,this._lastNumber];
-            }
+        }
 
         if (this._operation.length > 3){
             last = this._operation.pop();
@@ -188,7 +195,7 @@ class CalcController {
             this._operation = [result];         
             if (last) this._operation.push(last);
         }
-        console.log(result);   
+        //console.log(result);   
         this.setLastNumberToDisplay();    
 
     }
@@ -257,6 +264,14 @@ class CalcController {
 
     }
 
+    back(){
+        let lastOperation = this.getLastOperation();
+        let newLastOperation = lastOperation.substring(0,lastOperation.length -1);
+        //console.log(newLastOperation);
+        this.setLastOperation(newLastOperation.toString());
+        this.setLastNumberToDisplay();
+    }
+
     setError(){
         this.displayCalc = "Error";
         //return false;
@@ -291,22 +306,22 @@ class CalcController {
                 break;
             case 'square':
                 this.addOperation('square');
-                //return Math.sqrt(this._operation);
-                //console.log(this._operation);
-                //this._operation.result = Math.sqrt(this._operation);  
                 this.calc();
                 break;
-            case 'elevation':
+            case 'sqrt':
+                this.addOperation('sqrt');
                 this.calc();
                 break;
             case 'derivate':
+                this.addOperation('derivate');
                 this.calc();
                 break;
             case 'reverse':
+                this.addOperation('reverse');
                 this.calc();
                 break;
             case 'back':
-                this.calc();
+                this.back();
                 break;
             case 'dot':
                 this.addDot('.');
