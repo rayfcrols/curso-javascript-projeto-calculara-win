@@ -130,7 +130,11 @@ class CalcController {
     }
 
     isOperator(value){
+<<<<<<< HEAD
     return (['+','-','*','/','%','square','sqrt','derivate','reverse'].indexOf(value) > -1);
+=======
+    return (['+','-','*','/','%','square','elevation'].indexOf(value) > -1);
+>>>>>>> master
     }
 
     pushOperation(value){
@@ -142,16 +146,26 @@ class CalcController {
 
     getResult(){
         try{
+<<<<<<< HEAD
            //console.log(this._lastOperator);
+=======
+           console.log(this._lastOperator);
+>>>>>>> master
             if  (this._lastOperator == 'square'){
                     return Math.pow(this._operation[0],2);
                 } else if (this._lastOperator == 'sqrt'){
                     return Math.sqrt(this._operation[0]);
+<<<<<<< HEAD
                 }else if (this._lastOperator == 'derivate'){
                     return eval(1 / this._operation[0]);
                 }else if (this._lastOperator == 'reverse'){
                     return eval(this._operation[0] - (this._operation[0] * 2));
                 }else {
+=======
+                } else if (this._lastOperator == 'pow'){
+                    return Math.pow(this._operation[0],3);
+                } else {
+>>>>>>> master
                     return eval(this._operation.join(""));
                 }
         } catch(e){
@@ -308,8 +322,13 @@ class CalcController {
                 this.addOperation('square');
                 this.calc();
                 break;
+<<<<<<< HEAD
             case 'sqrt':
                 this.addOperation('sqrt');
+=======
+            case 'pow':
+                this.addOperation('pow');
+>>>>>>> master
                 this.calc();
                 break;
             case 'derivate':
